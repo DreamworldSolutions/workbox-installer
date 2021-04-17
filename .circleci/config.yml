@@ -6,7 +6,7 @@ jobs:
     steps:
       - checkout
       #- run: yarn-deduplicate --includePrerelease --list --fail
-      - run: yarn install --production=true --flat --frozen-lockfile --non-ineractive
+      - run: yarn install --production=true --flat --frozen-lockfile --non-interactive
       - run: yarn install --production=false --frozen-lockfile --non-interactive
       - run:
           name: Deploy
@@ -20,7 +20,7 @@ jobs:
     steps:
       - checkout
       #- run: yarn-deduplicate --includePrerelease --list --fail
-      - run: yarn install --production=true --flat --frozen-lockfile --non-ineractive
+      - run: yarn install --production=true --flat --frozen-lockfile --non-interactive
       - run: yarn install --production=false --frozen-lockfile --non-interactive
       - run: echo "Running release job"
       - run:
