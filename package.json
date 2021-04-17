@@ -13,8 +13,9 @@
     "url": "https://github.com/DreamworldSolutions/workbox-installer.git"
   },
   "keywords": [
-    "lit",
-    "form"
+    "pwa",
+    "workbox",
+    "service-worker"
   ],
   "author": "Chirag Moradiya",
   "license": "ISC",
