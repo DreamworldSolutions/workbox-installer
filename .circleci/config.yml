@@ -5,8 +5,9 @@ jobs:
       - image: circleci/node:14
     steps:
       - checkout
-      - run: yarn install --production=true --flat --non-ineractive
-      - run: yarn install --production=false --non-interactive
+      #- run: yarn-deduplicate --includePrerelease --list --fail
+      - run: yarn install --production=true --flat --frozen-lockfile --non-ineractive
+      - run: yarn install --production=false --frozen-lockfile --non-interactive
       - run:
           name: Deploy
           command: |
@@ -18,8 +19,9 @@ jobs:
       - image: circleci/node:14
     steps:
       - checkout
-      - run: yarn install --production=true --flat --non-ineractive
-      - run: yarn install --production=false --non-interactive
+      #- run: yarn-deduplicate --includePrerelease --list --fail
+      - run: yarn install --production=true --flat --frozen-lockfile --non-ineractive
+      - run: yarn install --production=false --frozen-lockfile --non-interactive
       - run: echo "Running release job"
       - run:
           name: Deploy
