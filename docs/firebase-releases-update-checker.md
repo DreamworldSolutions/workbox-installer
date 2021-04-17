@@ -35,7 +35,7 @@ Here, `fbDatabase` is the instance of the [`firebase.database.Database`](https:/
 - It sends detail about all the releases, which have been released after the `curVersion` (based on `time` field), as the `updates` to the installer. So, `updates` is an array of `Release` object sorted by the release time; latest at the end.
 - So, you will get this `updates` detail as input in `confirmUpdate` handler. You can use this `updates` detail to customize your notification or sometimes to skip the notification to the user. 
 
-In our apps we use the `updates` to decide which type of the notification to be shown to the user. [Read more](./release-release-dependent-notification.md)
+In our apps we use the `updates` to decide which type of the notification to be shown to the user. [Read more](./release-dependent-notification.md)
 
 ## Releases detail on the Firebase Database
 
