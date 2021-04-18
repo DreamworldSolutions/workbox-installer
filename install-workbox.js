@@ -24,6 +24,14 @@ export const install = (options) => {
   // window.wb = wb;
 
   wb.addEventListener('redundant', async (e) => {
+    //When 2 versions are released while a user is live, 
+    //the first installed service-worker becomes redundant when
+    //the second service-worker is installed. In that case,
+    //page shouldn't be reloaded when that first service-worker
+    //became redundant, as it wasn't controlling the page ever.
+
+    //This event is received in all the active tabs, so every tabs will
+    //be do page reload.
     if (e.sw == await wb.controlling) {
       window.location.reload();
     }

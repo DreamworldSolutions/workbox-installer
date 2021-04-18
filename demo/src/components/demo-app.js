@@ -1,17 +1,23 @@
 import { html, css, LitElement } from 'lit-element';
-import { default as installWorkbox } from '@dreamworld/workbox-installer';
-
-installWorkbox('/service-worker.js');
+import { ThemeStyle } from '@dreamworld/material-styles/theme.js';
+import * as TypographyLiterals from '@dreamworld/material-styles/typography-literals';
+import {installWithNotification, installWithoutNotification} from './install-sw.js';
 
 export class DemoApp extends LitElement {
   static get styles() {
-    return css`
+    return [
+      ThemeStyle,
+      css`
       :host {
+        --mdc-theme-primary-on-light: #00BCD4;
+        --mdc-theme-secondary-on-light: #FF4081;
         display: block;
-        padding: 25px;
-        color: var(--demo-app-text-color, #000);
+        color: var(--mdc-theme-text-primary);
+        height: 100vh;
+        ${TypographyLiterals.fontStyle};
       }
-    `;
+      `
+    ];
   }
 
   static get properties() {
@@ -29,7 +35,12 @@ export class DemoApp extends LitElement {
       <h2>Welcome to the Workbox Installer Demo App</h2>
       <button @click="${this.load1}">load 1</button>
       <button @click="${this.load2}">load 2</button>
+      <new-version-notification></new-version-notification>
     `;
+  }
+
+  get elNewVersionNotification() {
+    return this.renderRoot.querySelector('new-version-notification');
   }
 
   load1() {
@@ -38,6 +49,11 @@ export class DemoApp extends LitElement {
 
   load2() {
     import('./script2.js');
+  }
+
+  firstUpdated() {
+    import('./new-version-notification.js');
+    installWithNotification(this.elNewVersionNotification);
   }
 }
 
