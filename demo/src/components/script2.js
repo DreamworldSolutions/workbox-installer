@@ -1,0 +1,1 @@
+console.log("Script2 1.0 loaded");
