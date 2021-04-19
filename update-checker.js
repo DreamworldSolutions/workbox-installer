@@ -21,6 +21,6 @@ export default class UpdateChecker {
    * waits till the status becomes known.
    */
   async getUpdates() {
-    //No op
+    return null;
   }
 }

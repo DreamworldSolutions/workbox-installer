@@ -1,7 +1,9 @@
 import { html, css, LitElement } from 'lit-element';
 import { ThemeStyle } from '@dreamworld/material-styles/theme.js';
 import * as TypographyLiterals from '@dreamworld/material-styles/typography-literals';
-import {installWithNotification, installWithoutNotification} from './install-sw.js';
+// import {installWithNotification, installWithoutNotification} from './install-sw.js';
+
+import { installWithReleasesUpdateChecker } from './install-sw-with-firebase.js';
 
 export class DemoApp extends LitElement {
   static get styles() {
@@ -52,7 +54,8 @@ export class DemoApp extends LitElement {
   }
 
   firstUpdated() {
-    installWithNotification(this.elNewVersionNotification);
+    // installWithNotification(this.elNewVersionNotification);
+    installWithReleasesUpdateChecker(this.elNewVersionNotification, '1.13.1');
   }
 }
 

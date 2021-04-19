@@ -1,1 +1,1 @@
-console.log("script1 1.6 loaded");
+console.log("script1 1.0 loaded");

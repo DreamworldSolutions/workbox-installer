@@ -17,6 +17,11 @@ const parseOptions = (options) => {
   return { ...DEF_OPTIONS, ...options };
 }
 
+/**
+ * Holds last known updates value.
+ */
+let lastUpdates;
+
 export const install = (options) => {
   options = parseOptions(options);
 
@@ -37,14 +42,45 @@ export const install = (options) => {
     }
   });
 
+  let pendingUpdateConfirm = false;
+
+  /**
+   * Updates service-worker upon the confirmUpdate.
+   */
+  const updateOnConfirm = async (e) => {
+    pendingUpdateConfirm = true;
+    if (!lastUpdates) {
+      lastUpdates = await options.updateChecker.getUpdates();
+    }
+    await options.confirmUpdate(lastUpdates);
+    pendingUpdateConfirm = false;
+    wb.messageSkipWaiting();
+  };
+
   // Add an event listener to detect when the registered
   // service worker has installed but is waiting to activate.
-  wb.addEventListener('waiting', async (e) => {
-    await options.confirmUpdate();
-    wb.messageSkipWaiting();
+  wb.addEventListener('waiting', () => {
+    console.log('on waiting:');
+    updateOnConfirm();
   });
 
   wb.register();
+
+  options.updateChecker.onUpdate((updates) => {
+    lastUpdates = updates;
+    console.log('updates found:', updates);
+
+    //Note: While the App Tab is open, and 2 new versions are released 
+    //we don't receive `waiting` event again. So, notification (update confirmation)
+    //view isn't updated (if required). To solve this issue, we call the `updateOnConfirm` 
+    //in advance (before new service-worker is installed & ready); if user hasn't 
+    //confirmed earlier updates yet.
+    if (pendingUpdateConfirm) {
+      updateOnConfirm(updates);
+    }
+    
+    wb.update();
+  });
 }
 
 export default install;

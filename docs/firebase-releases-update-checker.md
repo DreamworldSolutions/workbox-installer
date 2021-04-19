@@ -45,6 +45,9 @@ In our apps we use the `updates` to decide which type of the notification to be 
   - `time` is a Number. DateTime as millis (`new Date().getTime()`) when this is released.
   - It could have any number of other fields, as per your need. For Example, In our apps we add fields like: `notificationType` and `reloginRequired`.
 - It should be stored on the firebase path: `/releases/{version}`.
+- Configure firebase rules for `/releases` path:
+  - It should be publicly accessible.
+  - And should have an index on `time` field.
 - So, if you look at the `/releases` path of the Firebase, it's data would look like following:
 
 ```json
