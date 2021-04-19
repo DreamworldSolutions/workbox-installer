@@ -10,7 +10,7 @@ export class NewVersionNotification extends LitElement {
         display: none;
       }
 
-      :host([type="non-blocking"]) {
+      :host([type]) {
         display: block;
       }
 
@@ -52,6 +52,9 @@ export class NewVersionNotification extends LitElement {
   static get properties() {
     return {
       releases: { type: Array },
+      /**
+       * Possible values: `non-blocking`, `blocking`, `full-screen`.
+       */
       type: { type: String, reflect: true }
     };
   }
@@ -72,6 +75,12 @@ export class NewVersionNotification extends LitElement {
             <dw-button label="NOT NOW" @click="${this.hide}"></dw-button>
           </div>
         </dw-surface>
+      `;
+    }
+
+    if (this.type === 'blocking') {
+      return html`
+        <h3>BLocking view</h3>
       `;
     }
     return html``;

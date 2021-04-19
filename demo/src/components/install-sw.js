@@ -7,8 +7,6 @@ export const installWithoutNotification = () => {
 export const installWithNotification = (elNewVersionNotification) => {
   installWorkbox({
     url: '/service-worker.js',
-    confirmUpdate: () => {
-      return elNewVersionNotification.show('non-blocking');
-    }
+    confirmUpdate: () => elNewVersionNotification.show('non-blocking')
   });
 }
