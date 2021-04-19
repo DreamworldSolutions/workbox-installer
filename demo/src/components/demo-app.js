@@ -52,7 +52,6 @@ export class DemoApp extends LitElement {
   }
 
   firstUpdated() {
-    import('./new-version-notification.js');
     installWithNotification(this.elNewVersionNotification);
   }
 }
