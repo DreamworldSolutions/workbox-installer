@@ -1,7 +1,7 @@
 import { html, css, LitElement } from 'lit-element';
 import '@dreamworld/dw-surface';
 import '@dreamworld/dw-button';
-
+import '@dreamworld/dw-dialog';
 
 export class NewVersionNotification extends LitElement {
   static get styles() {
@@ -15,6 +15,10 @@ export class NewVersionNotification extends LitElement {
       }
 
       :host([type=full-screen]), :host([type=blocking]) {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
         position: fixed;
         top: 0;
         left: 0;
@@ -66,6 +70,45 @@ export class NewVersionNotification extends LitElement {
       :host([type="non-blocking"]) .content > *:last-child {
         margin-right: 24px;
       }
+
+      :host([type="blocking"]) .dialog-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+      }
+
+      :host([type="blocking"]) .dialog-container .header {
+        font-size: 20px;
+        line-height: 24px;
+        font-weight: 600;
+        margin: 72px 0px 20px;
+      }
+
+      :host([type="blocking"]) .dialog-container .message {
+        font-size: 20px;
+        line-height: 24px;
+        text-align: center;
+      }
+
+      :host([type="blocking"]) .dialog-container a {
+        color: gray;
+      }
+
+      :host([type="blocking"]) .dialog-container dw-button {
+        margin: 32px 0px;
+      }
+
+      @media screen and (max-width: 592px) {
+        :host([type="blocking"]) dw-dialog {
+          --dw-dialog-border-radius: 40px 40px 0px 0px;
+        }
+
+        :host([type="blocking"]) .dialog-container {
+          min-height: calc(100vh - 52px);
+        }
+      }
     `;
   }
 
@@ -100,6 +143,7 @@ export class NewVersionNotification extends LitElement {
 
     if (this.type === 'full-screen') {
       return html`
+        <img src="../images/hisab-vertical.svg">
         <h3>Please Wait...</h3>
         <h5>Application is being updated</h5>
       `;
@@ -107,9 +151,20 @@ export class NewVersionNotification extends LitElement {
 
     if (this.type === 'blocking') {
       return html`
-        <h3>New Version Available!</h3>
+        <dw-dialog opened="true" placement=${window.innerWidth > 592 ? "center" : "bottom"} fit-height=${window.innerWidth < 592 ? true : false}>
+          <div>
+            <div class="dialog-container" >
+              <img src="../images/undraw_update_uxn2.svg">
+              <div class="header">New Update Available</div>
+              <div class="message">We have added some new features and fixed some bugs to make your accounting smooth. To know more about updates </div>
+              <a href="$1">click here</a>
+              <dw-button label="UPDATE" filled @click="${this._install}"></dw-button>
+            </div>
+          </div>
+        </dw-dialog>
+        <!-- <h3>New Version Available!</h3>
         <h5>Updates are ready to be installed!</h5>
-        <div style="text-align:center;"><dw-button label="INSTALL" @click="${this._install}"></dw-button></div>
+        <div style="text-align:center;"><dw-button label="INSTALL" @click="${this._install}"></dw-button></div> -->
       `;
     }
     return html``;
@@ -136,7 +191,7 @@ export class NewVersionNotification extends LitElement {
     return this._confirm;
   }
 
-  show(notificationType = "non-blocking", releases) {
+  show(notificationType = "blocking", releases) {
     this.type = notificationType;
     this.releases = releases;
     return this._waitForConfirmation();
