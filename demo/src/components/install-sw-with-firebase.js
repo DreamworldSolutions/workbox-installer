@@ -1,6 +1,7 @@
 import { default as installWorkbox } from '@dreamworld/workbox-installer';
 import firebase from "./init-firebase.js";
 import FirebaseReleasesUpdateChecker from '@dreamworld/workbox-installer/firebase-releases-update-checker';
+import { setReloginRequired, clearReloginRequired, isReloginPending } from './relogin.js';
 
 let windowLoadedAt;
 
@@ -34,22 +35,33 @@ const maxNotificationType = (releases) => {
   return notificationTypes[value]; //Convert numeric value of notificationType to String
 }
 
-const confirmUpdate = (releases, el) => {
+const confirmUpdate = ({ releases, el, logout, curVersion }) => {
   return new Promise((resolve) => {
     if (!releases || !Array.isArray(releases) || releases.length == 0) {
       console.error("releases detail not available. So, no notification is shown");
       return;
     }
+    
+    let logoutReqd = forceRelogin(releases);
+    if (logoutReqd) {
+      setReloginRequired(curVersion);
+    }
 
-    if (forceRelogin(releases)) {
-      console.log('do logout....');
-      //TODO: Do logout or cleanup data
+    /**
+     * Resolves the promise, after performing logout if `logoutReqd=true`.
+     */
+    const resolveWithLogout = async () => {
+      if(logoutReqd) {
+        await logout();
+        clearReloginRequired();
+      }
+      resolve();
     }
 
     // If it's within 20 seconds of the window load, then no need to confirm
     // from the user.
     if (new Date().getTime() - windowLoadedAt <= 20 * 1000) {
-      resolve();
+      resolveWithLogout();
       return;
     }
 
@@ -59,8 +71,8 @@ const confirmUpdate = (releases, el) => {
       return;
     }
 
-    return import('./new-version-notification.js').then(()=>{
-      el.show(notificationType, releases).then(resolve);
+    return import('./new-version-notification.js').then(() => {
+      el.show(notificationType, releases).then(resolveWithLogout);
     });
   });
 }
@@ -71,7 +83,7 @@ const confirmUpdate = (releases, el) => {
 // On Dimiss, It closes the notification. But, doesn't resolve the Promise.
 
 
-export const onUpdate = async (releases, el) => {
+export const onUpdate = async ({ releases, el }) => {
 
   if (!releases || !Array.isArray(releases) || releases.length == 0) {
     console.error("releases detail not available. So, no notification is shown");
@@ -87,19 +99,24 @@ export const onUpdate = async (releases, el) => {
 
 }
 
-export const installWithReleasesUpdateChecker = (el, curVersion) => {
+export const installWithReleasesUpdateChecker = async (el, curVersion, logout) => {
+  if (isReloginPending()) {
+    await logout();
+    clearReloginRequired();
+  }
+
   let fbReleasesUpdateChecker = new FirebaseReleasesUpdateChecker({
     fbDatabase: firebase.database(),
     releasesPath: 'releases',
     curVersion
   });
 
-  fbReleasesUpdateChecker.onUpdate((releases) => onUpdate(releases, el));
+  fbReleasesUpdateChecker.onUpdate((releases) => onUpdate({ releases, el }));
 
   installWorkbox({
     url: '/service-worker.js',
     confirmUpdate: (releases) => {
-      return confirmUpdate(releases, el);
+      return confirmUpdate({ releases, el, logout, curVersion });
     },
     updateChecker: fbReleasesUpdateChecker
   });

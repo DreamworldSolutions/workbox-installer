@@ -4,6 +4,7 @@ import * as TypographyLiterals from '@dreamworld/material-styles/typography-lite
 // import {installWithNotification, installWithoutNotification} from './install-sw.js';
 
 import { installWithReleasesUpdateChecker } from './install-sw-with-firebase.js';
+import { login, logout, isLoggedIn } from './auth.js';
 
 export class DemoApp extends LitElement {
   static get styles() {
@@ -35,9 +36,17 @@ export class DemoApp extends LitElement {
   render() {
     return html`
       <h2>Welcome to the Workbox Installer Demo App</h2>
-      <button @click="${this.load1}">load 1</button>
-      <button @click="${this.load2}">load 2</button>
       <new-version-notification></new-version-notification>
+      ${!isLoggedIn() ?
+        html`<button @click="${this.login}">Login</button>`: 
+        html`
+          <button @click="${this.logout}">Logout</button>
+          <div style="padding: 32px;">
+            <button @click="${this.load1}">load 1</button>
+            <button @click="${this.load2}">load 2</button>
+          </div>
+          `
+      }
     `;
   }
 
@@ -53,9 +62,19 @@ export class DemoApp extends LitElement {
     import('./script2.js');
   }
 
+  login() {
+    login();
+    this.requestUpdate();
+  }
+
+  logout() {
+    logout();
+    this.requestUpdate();
+  }
+
   firstUpdated() {
     // installWithNotification(this.elNewVersionNotification);
-    installWithReleasesUpdateChecker(this.elNewVersionNotification, '1.13.1');
+    installWithReleasesUpdateChecker(this.elNewVersionNotification, '1.19.3', this.logout.bind(this));
   }
 }
 
