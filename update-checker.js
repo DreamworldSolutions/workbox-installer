@@ -19,6 +19,11 @@ export default class UpdateChecker {
    * In case no updates available, returns `null` or `undefined`.
    * If the updates status is known, then produces the result immediately. Otherwise, 
    * waits till the status becomes known.
+   * 
+   * This is used by the `install-workbox` script only if new service worker is 
+   * installed and ready to be used (in 'waiting' status). But, no updates are yet 
+   * known to it. This happens only on the page refresh. Because, during 
+   * page refresh the service-worker is installed/updated automatically.
    */
   async getUpdates() {
     return null;
