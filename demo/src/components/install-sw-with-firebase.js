@@ -3,6 +3,14 @@ import firebase from "./init-firebase.js";
 import FirebaseReleasesUpdateChecker from '@dreamworld/workbox-installer/firebase-releases-update-checker';
 import { setReloginRequired, clearReloginRequired, isReloginPending } from './relogin.js';
 
+
+/**
+ * Represents the no of seconds. If updates are found within N seconds from the page
+ * reload, then user isn't asked to confirm the udpate. And updates are applied 
+ * automatically.
+ */
+const AUTO_CONFIRM_WITHIN_SECONDS = 20;
+
 let windowLoadedAt;
 
 if (document.readyState === 'complete') {
@@ -60,7 +68,7 @@ const confirmUpdate = ({ releases, el, logout, curVersion }) => {
 
     // If it's within 20 seconds of the window load, then no need to confirm
     // from the user.
-    if (new Date().getTime() - windowLoadedAt <= 20 * 1000) {
+    if (new Date().getTime() - windowLoadedAt <= AUTO_CONFIRM_WITHIN_SECONDS * 1000) {
       resolveWithLogout();
       return;
     }
@@ -92,7 +100,7 @@ export const onUpdate = async ({ releases, el }) => {
 
   // If it's within 20 seconds of the window load, then no need to confirm
   // from the user.
-  if (new Date().getTime() - windowLoadedAt <= 20 * 1000) {
+  if (new Date().getTime() - windowLoadedAt <= AUTO_CONFIRM_WITHIN_SECONDS * 1000) {
     await import('./new-version-notification.js');
     el.show('full-screen');
   }

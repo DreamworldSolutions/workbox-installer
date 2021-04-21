@@ -74,7 +74,7 @@ export class DemoApp extends LitElement {
 
   firstUpdated() {
     // installWithNotification(this.elNewVersionNotification);
-    installWithReleasesUpdateChecker(this.elNewVersionNotification, '1.19.3', this.logout.bind(this));
+    installWithReleasesUpdateChecker(this.elNewVersionNotification, '1.20.4', this.logout.bind(this));
   }
 }
 
