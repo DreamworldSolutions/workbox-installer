@@ -3,7 +3,7 @@ import UpdateChecker from './update-checker.js';
 
 const DEF_OPTIONS = {
   url: '/service-worker.js',
-  confirmUpdate: async () => { }, //No op functions
+  confirmUpdate: () => { return new Promise(() => {}); }, //No op functions
   updateChecker: new UpdateChecker()
 };
 
