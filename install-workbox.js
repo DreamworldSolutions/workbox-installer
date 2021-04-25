@@ -3,7 +3,7 @@ import UpdateChecker from './update-checker.js';
 
 const DEF_OPTIONS = {
   url: '/service-worker.js',
-  confirmUpdate: () => { return new Promise(() => {}); }, //No op functions
+  confirmUpdate: () => { return new Promise(() => { }); }, //No op functions
   updateChecker: new UpdateChecker()
 };
 
@@ -55,6 +55,13 @@ export const install = (options) => {
     await options.confirmUpdate(lastUpdates);
     pendingUpdateConfirm = false;
     wb.messageSkipWaiting();
+
+    //Automatically reload the window, if service-worker isn't activated even
+    //after 10 minutes of skipWaiting.
+    //It's actually a hack to resolve the browser issue.
+    //See https://stackoverflow.com/questions/54628657/self-skipwaiting-not-working-in-service-worker
+    //for the reference.
+    window.setTimeout(() => window.location.reload(), 10000);
   };
 
   // Add an event listener to detect when the registered
@@ -78,7 +85,7 @@ export const install = (options) => {
     if (pendingUpdateConfirm) {
       updateOnConfirm(updates);
     }
-    
+
     wb.update();
   });
 }
