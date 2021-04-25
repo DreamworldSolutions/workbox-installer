@@ -57,11 +57,11 @@ export const install = (options) => {
     wb.messageSkipWaiting();
 
     //Automatically reload the window, if service-worker isn't activated even
-    //after 10 minutes of skipWaiting.
+    //after few seconds of skipWaiting.
     //It's actually a hack to resolve the browser issue.
     //See https://stackoverflow.com/questions/54628657/self-skipwaiting-not-working-in-service-worker
     //for the reference.
-    window.setTimeout(() => window.location.reload(), 10000);
+    window.setTimeout(() => window.location.reload(), 3000);
   };
 
   // Add an event listener to detect when the registered
