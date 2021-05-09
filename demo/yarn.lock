@@ -911,10 +911,10 @@
   resolved "https://registry.yarnpkg.com/@dreamworld/web-util/-/web-util-1.4.4.tgz#1125fb8cc8a7aa12e6b0422996df504c8b5df554"
   integrity sha512-QdC/U+fX3onm7P11FVOrmwIRveYP6rrVAqyoO7BLJ98wL4X7rJGlIXBu5FdZ0SE8moyFCmkkWm/1gIzG+62pdQ==
 
-"@dreamworld/workbox-installer@^1.0.0-init.7":
-  version "1.0.0-init.7"
-  resolved "https://registry.yarnpkg.com/@dreamworld/workbox-installer/-/workbox-installer-1.0.0-init.7.tgz#aaa0bf4d2f3f1c51730105962644301b9702a60a"
-  integrity sha512-evlmnahE4XJAOqGEE87eNDW//+1+zXAXJHzz88tgODvX47VimkzEETTg+Z8UN+VG94kTkHA8SlUv2Wl3XXGBsg==
+"@dreamworld/workbox-installer@^1.0.0-init.10":
+  version "1.0.0-init.10"
+  resolved "https://registry.yarnpkg.com/@dreamworld/workbox-installer/-/workbox-installer-1.0.0-init.10.tgz#5e37f1ea7bfdd8b0a82cd61e62822f2e360e20e6"
+  integrity sha512-vqIdvCrbO5XJmQ7FflxcPlpeoMXmVbnOXrSklFW33NXKzZKP3Hm9rKkoBy6KAaXu/zTO/8lNgCb1NV3O9PIM+g==
   dependencies:
     workbox-window "^6.1.5"
 
