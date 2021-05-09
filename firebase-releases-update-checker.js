@@ -1,5 +1,7 @@
 import AbstractUpdateChecker from './abstract-update-checker';
+import loglevel from 'loglevel';
 
+const logger = loglevels.getLogger('workbox-installer.firebase-releases-update-checker');
 export default class FirebaseUpdateReleasesChecker extends AbstractUpdateChecker {
 
   constructor({ fbDatabase, releasesPath = "releases", curVersion }) {
@@ -22,8 +24,8 @@ export default class FirebaseUpdateReleasesChecker extends AbstractUpdateChecker
   async _watchReleases() {
     let query = await this._buildQuery();
     query.on('value', (snapshot) => {
-      let releases  = this._parseQueryResponse(snapshot.val());
-      console.log('_watchReleases: found updates', releases);
+      let releases = this._parseQueryResponse(snapshot.val());
+      logger.info('_watchReleases: found updates', releases);
       this.updates = releases;
     });
   }
@@ -47,7 +49,7 @@ export default class FirebaseUpdateReleasesChecker extends AbstractUpdateChecker
     let query = await this._buildQuery();
     let snapshot = await query.once('value');
     let val = this._parseQueryResponse(snapshot.val());
-    console.log('_getUpdates: val', val);
+    logger.debug('_getUpdates: val', val);
     return val;
   }
 
@@ -58,12 +60,12 @@ export default class FirebaseUpdateReleasesChecker extends AbstractUpdateChecker
    * @returns {Array} Releases sorted by their release time.
    */
   _parseQueryResponse(response) {
-    console.log("_parseQueryResponse: response", response);
-    if(!response) {
+    logger.debugs("_parseQueryResponse: response", response);
+    if (!response) {
       return null;
     }
 
-    let releases =  Object.values(response).sort((r1, r2) => {
+    let releases = Object.values(response).sort((r1, r2) => {
       return r1.time - r2.time;
     });
 
