@@ -151,7 +151,7 @@ export class NewVersionNotification extends LitElement {
 
     if (this.type === 'blocking') {
       return html`
-        <dw-dialog opened="true" placement=${window.innerWidth > 592 ? "center" : "bottom"} fit-height=${window.innerWidth < 592 ? true : false}>
+        <dw-dialog opened="true" placement=${window.innerWidth > 592 ? "center" : "bottom"} fit-height=${window.innerWidth < 592 ? true : false} noCancelOnOutsideClick noCancelOnEscKey>
           <div>
             <div class="dialog-container" >
               <img src="../images/undraw_update_uxn2.svg">
