@@ -60,7 +60,7 @@ export default class FirebaseUpdateReleasesChecker extends AbstractUpdateChecker
    * @returns {Array} Releases sorted by their release time.
    */
   _parseQueryResponse(response) {
-    logger.debugs("_parseQueryResponse: response", response);
+    logger.debug("_parseQueryResponse: response", response);
     if (!response) {
       return null;
     }
