@@ -1,7 +1,7 @@
 import AbstractUpdateChecker from './abstract-update-checker';
 import loglevel from 'loglevel';
 
-const logger = loglevels.getLogger('workbox-installer.firebase-releases-update-checker');
+const logger = loglevel.getLogger('workbox-installer.firebase-releases-update-checker');
 export default class FirebaseUpdateReleasesChecker extends AbstractUpdateChecker {
 
   constructor({ fbDatabase, releasesPath = "releases", curVersion }) {
