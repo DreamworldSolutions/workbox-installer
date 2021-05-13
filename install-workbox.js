@@ -63,7 +63,6 @@ export const install = (options) => {
     logger.debug('updateOnConfirm: waiting on the user/integrator confirmation');
     await options.confirmUpdate(lastUpdates);
     logger.debug('updateOnConfirm: User confirmed.');
-    await options.confirmUpdate(lastUpdates);
     pendingUpdateConfirm = false;
     wb.messageSkipWaiting();
     logger.debug('updateOnConfirm: skipWaiting sent.');
