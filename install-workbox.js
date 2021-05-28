@@ -1,8 +1,5 @@
 import { Workbox } from 'workbox-window';
 import UpdateChecker from './update-checker.js';
-import loglevel from 'loglevel';
-
-const logger = loglevel.getLogger('workbox-installer');
 
 const DEF_OPTIONS = {
   url: '/service-worker.js',
@@ -41,10 +38,7 @@ export const install = (options) => {
     //This event is received in all the active tabs, so every tabs will
     //be do page reload.
     if (e.sw == await wb.controlling) {
-      logger.info('on redundant: Going to reload....');
       window.location.reload();
-    } else {
-      logger.debug('on redundant: A waiting service-worker might became redundant...');
     }
   });
 
@@ -54,18 +48,13 @@ export const install = (options) => {
    * Updates service-worker upon the confirmUpdate.
    */
   const updateOnConfirm = async (e) => {
-    logger.debug('updateOnConfirm: invoked.');
     pendingUpdateConfirm = true;
     if (!lastUpdates) {
-      logger.debug('updateOnConfirm: waiting for the updates detail....');
       lastUpdates = await options.updateChecker.getUpdates();
     }
-    logger.debug('updateOnConfirm: waiting on the user/integrator confirmation');
     await options.confirmUpdate(lastUpdates);
-    logger.debug('updateOnConfirm: User confirmed.');
     pendingUpdateConfirm = false;
     wb.messageSkipWaiting();
-    logger.debug('updateOnConfirm: skipWaiting sent.');
 
     //Automatically reload the window, if service-worker isn't activated even
     //after few seconds of skipWaiting.
@@ -78,7 +67,6 @@ export const install = (options) => {
   // Add an event listener to detect when the registered
   // service worker has installed but is waiting to activate.
   wb.addEventListener('waiting', () => {
-    logger.info('on waiting...');
     updateOnConfirm();
   });
 
@@ -86,7 +74,6 @@ export const install = (options) => {
 
   options.updateChecker.onUpdate((updates) => {
     lastUpdates = updates;
-    logger.info('updates found:', updates);
 
     //Note: While the App Tab is open, and 2 new versions are released 
     //we don't receive `waiting` event again. So, notification (update confirmation)

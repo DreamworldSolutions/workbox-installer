@@ -24,7 +24,6 @@
   },
   "homepage": "https://github.com/DreamworldSolutions/workbox-installer#README",
   "dependencies": {
-    "loglevel": "^1.7.1",
     "workbox-window": "^6.1.5"
   },
   "devDependencies": {

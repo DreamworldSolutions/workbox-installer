@@ -33,7 +33,6 @@ const maxNotificationType = (releases) => {
 export const confirmUpdate = (releases) => {
   return new Promise((resolve) => {
     if(!releases || !Array.isArray(releases) || releases.length == 0) {
-      logger.error("releases detail not available. So, no notification is shown");
       return;
     }
 
@@ -66,7 +65,6 @@ export const confirmUpdate = (releases) => {
 export const onUpdate = (releases) => {
 
   if(!releases || !Array.isArray(releases) || releases.length == 0) {
-    logger.error("releases detail not available. So, no notification is shown");
     return;
   }
 
