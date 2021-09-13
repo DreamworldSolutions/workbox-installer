@@ -37,6 +37,9 @@ export const install = (options) => {
 
     //This event is received in all the active tabs, so every tabs will
     //be do page reload.
+    console.log('redundant called', e.sw);
+    console.log('workbox controlling', await wb.controlling);
+    console.log(e.sw == await wb.controlling);
     if (e.sw == await wb.controlling) {
       window.location.reload();
     }
@@ -62,6 +65,7 @@ export const install = (options) => {
     //See https://stackoverflow.com/questions/54628657/self-skipwaiting-not-working-in-service-worker
     //for the reference.
     window.setTimeout(() => window.location.reload(), 3000);
+    console.log('reload on confirm update');
   };
 
   // Add an event listener to detect when the registered
