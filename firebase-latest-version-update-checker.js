@@ -25,13 +25,15 @@ export default class FirebaseLatestVersionUpdateChecker extends AbstractUpdateCh
   async _watchReleases() {
     let query = await this._buildQuery();
     query.on('value', (snapshot) => {
-      this.updates = snapshot.val();
+      const latestVersion = snapshot.val();
+      this.updates = latestVersion === this.curVersion ? null : latestVersion;
     });
   }
 
   async _getUpdates() {
     const query = await this._buildQuery();
     const snapshot = await query.once('value');
-    return snapshot.val();
+    const latestVersion = snapshot.val();
+    return latestVersion === this.curVersion ? null : latestVersion;
   }
 }
