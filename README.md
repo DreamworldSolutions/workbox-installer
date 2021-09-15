@@ -8,7 +8,7 @@ A helper library to install a Service Worker generated using [Workbox][workbox] 
 - When an app is updated from one of the browser tabs, other tabs are automatically reloaded to ensure that all the tabs are using the latest version of the app.
 - Asks for the confirmation only when the new service worker is installed & ready to use (when all the updated and new resources are already pre-cached).
 ## Getting Strated 
-1. Configure your PWA build-script to build `service-worker.js` using workbox, and set `clientsClaim=true` option. You would like to configure other options for your PWA as shown in [this demo][demo-workbox-build]. Feel free to chose your preferred way of the build.
+1. Configure your PWA build-script to build `service-worker.js` using workbox, and set `clientsClaim=true & skipWaiting=false` options. You would like to configure other options for your PWA as shown in [this demo][demo-workbox-build]. Feel free to chose your preferred way of the build.
 2. Add this library to your dependency. `npm install --save workbox-installer`
 3. Install Service Worker.
 
