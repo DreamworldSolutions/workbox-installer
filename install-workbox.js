@@ -24,8 +24,9 @@ let lastUpdates;
 
 export const install = (options) => {
   options = parseOptions(options);
-
+  console.log('install-workbox: installed called', options);
   const wb = new Workbox(options.url);
+  window.__WB = wb;
   // window.wb = wb;
 
   wb.addEventListener('redundant', async (e) => {
@@ -38,7 +39,10 @@ export const install = (options) => {
     //This event is received in all the active tabs, so every tabs will
     //be do page reload.
     if (e.sw == await wb.controlling) {
+      console.log('service worker became redundant:', e.sw);
       window.location.reload();
+    } else {
+      console.log('service worker became redundant but page is not reloaded');
     }
   });
 
@@ -55,6 +59,7 @@ export const install = (options) => {
     await options.confirmUpdate(lastUpdates);
     pendingUpdateConfirm = false;
     wb.messageSkipWaiting();
+    console.trace('updateOnConfirm: skipWaiting called');
 
     //Automatically reload the window, if service-worker isn't activated even
     //after few seconds of skipWaiting.
@@ -85,6 +90,7 @@ export const install = (options) => {
     }
 
     wb.update();
+    console.log('wb.update called');
   });
 }
 
