@@ -24,9 +24,10 @@ let lastUpdates;
 
 export const install = (options) => {
   options = parseOptions(options);
-  console.log('install-workbox: installed called', options);
+  console.log('install-workbox: install called', options);
   const wb = new Workbox(options.url);
   window.__WB = wb;
+  window._wbInstallOptions = options;
   // window.wb = wb;
 
   wb.addEventListener('redundant', async (e) => {
