@@ -42,6 +42,9 @@ export const install = (options) => {
     if (e.sw == await wb.controlling) {
       console.log('service worker became redundant:', e.sw);
       window.location.reload();
+      setTimeout(() => {
+        console.error(`workbox-installer: page is not reloaded withing 5 seconds after service worker became redundant.`);
+      }, 5000);
     } else {
       console.log('service worker became redundant but page is not reloaded');
     }
