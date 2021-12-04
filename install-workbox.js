@@ -28,6 +28,7 @@ export const install = (options) => {
   const wb = new Workbox(options.url);
   // window.wb = wb;
 
+  /*
   wb.addEventListener('redundant', async (e) => {
     //When 2 versions are released while a user is live, 
     //the first installed service-worker becomes redundant when
@@ -37,7 +38,34 @@ export const install = (options) => {
 
     //This event is received in all the active tabs, so every tabs will
     //be do page reload.
-    if (e.sw == await wb.controlling) {
+    const controlling =  await wb.controlling;
+    if (e.sw == controlling) {
+      window.setTimeout(() => {
+        window.location.reload();
+      }, 100);
+    }
+  });
+   */
+
+  wb.addEventListener('controlling', async (e) => {
+    if (!e.isUpdate) {
+      console.debug("install-workbox: controlling service-worker is changed, but it's not an update");
+      return;
+    }
+    if (e.isUpdate) {
+      if (e.sw.state !== 'activated') {
+        console.debug('install-workbox: controlling service-worker is updated. Will wait till it is activated.');
+        const listener = () => {
+          if (e.sw.state == 'activated') {
+            console.debug('install-workbox: controlling service-worker is updated and activated. Going to reload now...');
+            window.location.reload();
+            e.sw.removeEventListener('statechange', listener);
+          }
+        };
+        e.sw.addEventListener('statechange', listener);
+        return;
+      }
+      console.debug('install-workbox: controlling service-worker is updated. Going to reload...');
       window.location.reload();
     }
   });
@@ -67,6 +95,7 @@ export const install = (options) => {
   // Add an event listener to detect when the registered
   // service worker has installed but is waiting to activate.
   wb.addEventListener('waiting', () => {
+    console.debug('install-workbox: on waiting invoked.');
     updateOnConfirm();
   });
 
@@ -74,6 +103,8 @@ export const install = (options) => {
 
   options.updateChecker.onUpdate((updates) => {
     lastUpdates = updates;
+
+    console.debug('install-workbox: updateChecker.onUpdate invoked.', updates, pendingUpdateConfirm);
 
     //Note: While the App Tab is open, and 2 new versions are released 
     //we don't receive `waiting` event again. So, notification (update confirmation)
