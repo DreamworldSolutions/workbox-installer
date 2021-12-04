@@ -47,27 +47,49 @@ export const install = (options) => {
   });
    */
 
+  let controllingSW;
+
+  wb.controlling.then((sw) => controllingSW = sw);
+
   wb.addEventListener('controlling', async (e) => {
-    if (!e.isUpdate) {
+
+    // Note: e.isUpdate doesn't work reliably, so it's not used.
+    // In following scenario e.isUpdate should be `true`, but it's found `false`.
+    // - Open app in incognito window (so a new service-worker is installed)
+    // - While user is using the App and window isn't yet reloaded, a new version is released
+    // - User confirms update
+    // - Now this event is dispatched, and at this time e.isUpdate is found `false`; While expected result
+    //   is `true`.
+
+    // if (!e.isUpdate) {
+    //   console.debug("install-workbox: controlling service-worker is changed, but it's not an update");
+    //   return;
+    // }
+
+
+    // Alternate (Manual) check for whether it's update or the fresh install
+    const sw = navigator.serviceWorker.controller; //new ServiceWorker
+    if(controllingSW === undefined || controllingSW === sw) {
       console.debug("install-workbox: controlling service-worker is changed, but it's not an update");
       return;
     }
-    if (e.isUpdate) {
-      if (e.sw.state !== 'activated') {
-        console.debug('install-workbox: controlling service-worker is updated. Will wait till it is activated.');
-        const listener = () => {
-          if (e.sw.state == 'activated') {
-            console.debug('install-workbox: controlling service-worker is updated and activated. Going to reload now...');
-            window.location.reload();
-            e.sw.removeEventListener('statechange', listener);
-          }
-        };
-        e.sw.addEventListener('statechange', listener);
-        return;
-      }
-      console.debug('install-workbox: controlling service-worker is updated. Going to reload...');
-      window.location.reload();
+    
+    console.debug('install-workbox: on controlling. sw.state', sw.state, controllingSW);
+
+    if (sw.state !== 'activated') {
+      console.debug('install-workbox: controlling service-worker is updated. Will wait till it is activated.');
+      const listener = () => {
+        if (sw.state == 'activated') {
+          console.debug('install-workbox: controlling service-worker is updated and activated. Going to reload now...');
+          window.location.reload();
+          sw.removeEventListener('statechange', listener);
+        }
+      };
+      sw.addEventListener('statechange', listener);
+      return;
     }
+    console.debug('install-workbox: controlling service-worker is updated. Going to reload...');
+    window.location.reload();
   });
 
   let pendingUpdateConfirm = false;
