@@ -69,7 +69,7 @@ export const install = (options) => {
 
     // Alternate (Manual) check for whether it's update or the fresh install
     const sw = navigator.serviceWorker.controller; //new ServiceWorker
-    if(!controllingSW || controllingSW === sw) {
+    if(!sw || !controllingSW || controllingSW === sw) {
       console.debug("install-workbox: controlling service-worker is changed, but it's not an update");
       return;
     }
