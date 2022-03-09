@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/DreamworldSolutions/workbox-installer#README",
   "dependencies": {
+    "firebase": "^9.6.8",
     "workbox-window": "^6.1.5"
   },
   "devDependencies": {

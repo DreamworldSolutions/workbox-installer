@@ -58,6 +58,7 @@ Following implementations of the `UpdateChecker` are available, check them if yo
 
 - [FirebaseReleasesUpdateChecker](docs/firebase-releases-update-checker.md)
 - [FirebaseLatestVersionUpdateChecker](docs/firebase-latest-version-update-checker.md)
+- [FirestoreLatestVersionUpdateChecker](docs/firestore-latest-version-update-checker.md)
 
 [workbox]: https://developers.google.com/web/tools/workbok
 [demo-workbox-build]: demo/buildsw.js
