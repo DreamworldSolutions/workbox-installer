@@ -31,7 +31,7 @@ export default class FirestoreLatestVersionUpdateChecker extends AbstractUpdateC
     onSnapshot(
       doc(this.db, ...this.pathSegments),
       (snapshot) => {
-        const val = snapshot.val();
+        const val = snapshot.data();
         const latestVersion = val && val[this.latestVersionField];
         this.updates = latestVersion === this.curVersion ? null : latestVersion;
       },
@@ -48,7 +48,7 @@ export default class FirestoreLatestVersionUpdateChecker extends AbstractUpdateC
     try {
       const docRef = doc(this.db, ...this.pathSegments);
       const snapshot = await getDoc(docRef);
-      const val = snapshot.val();
+      const val = snapshot.data();
       const latestVersion = val && val[this.latestVersionField];
       return latestVersion === this.curVersion ? null : latestVersion;
     } catch (error) {
