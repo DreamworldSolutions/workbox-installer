@@ -19,7 +19,7 @@ installWorkbox({
     //When user confirms, resolve the promise.
   },
   updateChecker: new FirestoreLatestVersionUpdatechecker({
-    latestVersionDocumentPath: 'app/app_0',
+    latestVersionDocumentPath: 'app/app-pwa',
     latestVersionField: "version"
     curVersion: appCurVersion
   })

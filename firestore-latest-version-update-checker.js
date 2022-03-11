@@ -7,7 +7,7 @@ export default class FirestoreLatestVersionUpdateChecker extends AbstractUpdateC
 
     if (!this.__isValidDocumentPath(latestVersionDocumentPath)) {
       throw new Error(
-        `workbox-installer > Please provide valid document path. e.g. "app/app_0"`
+        `workbox-installer > Please provide valid document path. e.g. "app/app-pwa"`
       );
     }
 
