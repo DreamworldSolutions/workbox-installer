@@ -102,14 +102,14 @@ export const install = (options) => {
   /**
    * Updates service-worker upon the confirmUpdate.
    */
-  const updateOnConfirm = async (e) => {
+  const updateOnConfirm = async (updates) => {
     pendingUpdateConfirm = true;
     console.debug('install-workbox: updateOnConfirm > START', pendingUpdateConfirm, newVersionReleaseCount);
-    if (!lastUpdates) {
+    if (!updates && !lastUpdates) {
       lastUpdates = await options.updateChecker.getUpdates();
     }
     console.debug('install-workbox: updateOnConfirm > WAITING', pendingUpdateConfirm, newVersionReleaseCount);
-    await options.confirmUpdate(lastUpdates);
+    await options.confirmUpdate(updates || lastUpdates);
     pendingUpdateConfirm = false;
     wb.messageSkipWaiting();
     console.debug('install-workbox: updateOnConfirm > COMPLETED', pendingUpdateConfirm, newVersionReleaseCount);
