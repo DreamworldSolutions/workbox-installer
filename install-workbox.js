@@ -18,6 +18,11 @@ const parseOptions = (options) => {
 }
 
 /**
+ * Count's of updates in current sessions.
+ */
+let newVersionReleaseCount = 0;
+
+/**
  * Holds last known updates value.
  */
 let lastUpdates;
@@ -132,14 +137,15 @@ export const install = (options) => {
   options.updateChecker.onUpdate((updates) => {
     lastUpdates = updates;
 
-    console.debug('install-workbox: updateChecker.onUpdate invoked.', updates, pendingUpdateConfirm);
+    newVersionReleaseCount++;
+    console.debug('install-workbox: updateChecker.onUpdate invoked.', updates, pendingUpdateConfirm, newVersionReleaseCount);
 
     //Note: While the App Tab is open, and 2 new versions are released
     //we don't receive `waiting` event again. So, notification (update confirmation)
     //view isn't updated (if required). To solve this issue, we call the `updateOnConfirm`
     //in advance (before new service-worker is installed & ready); if user hasn't
     //confirmed earlier updates yet.
-    if (pendingUpdateConfirm) {
+    if (pendingUpdateConfirm || newVersionReleaseCount > 1) {
       updateOnConfirm(updates);
     }
 
