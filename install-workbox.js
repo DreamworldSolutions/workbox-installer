@@ -104,15 +104,15 @@ export const install = (options) => {
    */
   const updateOnConfirm = async (e) => {
     pendingUpdateConfirm = true;
-    console.debug('install-workbox: updateOnConfirm > START', pendingUpdateConfirm, new Date().getTime());
+    console.debug('install-workbox: updateOnConfirm > START', pendingUpdateConfirm, newVersionReleaseCount);
     if (!lastUpdates) {
       lastUpdates = await options.updateChecker.getUpdates();
     }
-    console.debug('install-workbox: updateOnConfirm > WAITING', pendingUpdateConfirm, new Date().getTime());
+    console.debug('install-workbox: updateOnConfirm > WAITING', pendingUpdateConfirm, newVersionReleaseCount);
     await options.confirmUpdate(lastUpdates);
     pendingUpdateConfirm = false;
     wb.messageSkipWaiting();
-    console.debug('install-workbox: updateOnConfirm > COMPLETED', pendingUpdateConfirm, new Date().getTime());
+    console.debug('install-workbox: updateOnConfirm > COMPLETED', pendingUpdateConfirm, newVersionReleaseCount);
 
     //Automatically reload the window, if service-worker isn't activated even
     //after few seconds of skipWaiting.
