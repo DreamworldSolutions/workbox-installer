@@ -18,11 +18,6 @@ const parseOptions = (options) => {
 }
 
 /**
- * Count's of updates in current sessions.
- */
-let newVersionReleaseCount = 0;
-
-/**
  * Holds last known updates value.
  */
 let lastUpdates;
@@ -104,15 +99,15 @@ export const install = (options) => {
    */
   const updateOnConfirm = async (updates) => {
     pendingUpdateConfirm = true;
-    console.debug('install-workbox: updateOnConfirm > START', pendingUpdateConfirm, newVersionReleaseCount);
+    console.debug('install-workbox: updateOnConfirm > START', pendingUpdateConfirm);
     if (!updates && !lastUpdates) {
       lastUpdates = await options.updateChecker.getUpdates();
     }
-    console.debug('install-workbox: updateOnConfirm > WAITING', pendingUpdateConfirm, newVersionReleaseCount);
+    console.debug('install-workbox: updateOnConfirm > WAITING', pendingUpdateConfirm);
     await options.confirmUpdate(updates || lastUpdates);
     pendingUpdateConfirm = false;
     wb.messageSkipWaiting();
-    console.debug('install-workbox: updateOnConfirm > COMPLETED', pendingUpdateConfirm, newVersionReleaseCount);
+    console.debug('install-workbox: updateOnConfirm > COMPLETED', pendingUpdateConfirm);
 
     //Automatically reload the window, if service-worker isn't activated even
     //after few seconds of skipWaiting.
@@ -141,15 +136,14 @@ export const install = (options) => {
   options.updateChecker.onUpdate((updates) => {
     lastUpdates = updates;
 
-    newVersionReleaseCount++;
-    console.debug('install-workbox: updateChecker.onUpdate invoked.', updates, pendingUpdateConfirm, newVersionReleaseCount);
+    console.debug('install-workbox: updateChecker.onUpdate invoked.', updates, pendingUpdateConfirm);
 
     //Note: While the App Tab is open, and 2 new versions are released
     //we don't receive `waiting` event again. So, notification (update confirmation)
     //view isn't updated (if required). To solve this issue, we call the `updateOnConfirm`
     //in advance (before new service-worker is installed & ready); if user hasn't
     //confirmed earlier updates yet.
-    if (pendingUpdateConfirm || newVersionReleaseCount > 1) {
+    if (pendingUpdateConfirm) {
       updateOnConfirm(updates);
     }
 
