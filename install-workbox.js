@@ -26,7 +26,7 @@ export const install = (options) => {
   options = parseOptions(options);
 
   const wb = new Workbox(options.url);
-  // window.wb = wb;
+  window.wb = wb;
 
   /*
   wb.addEventListener('redundant', async (e) => {
