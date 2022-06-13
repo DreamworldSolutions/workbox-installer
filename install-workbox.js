@@ -127,9 +127,13 @@ export const install = (options) => {
 
   // Add an event listener to detect when the registered
   // service worker has installed but is waiting to activate.
-  wb.addEventListener('waiting', () => {
-    console.debug('install-workbox: on waiting invoked.');
+  wb.addEventListener('waiting', (event) => {
+    console.debug('install-workbox: on waiting invoked.', event);
     updateOnConfirm();
+  });
+
+  wb.addEventListener('externalwaiting', (event) => {
+    console.debug('install-workbox: on external-waiting invoked.', event);
   });
 
   wb.register();
