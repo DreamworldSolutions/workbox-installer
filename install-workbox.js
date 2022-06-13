@@ -30,7 +30,7 @@ export const install = (options) => {
 
   /*
   wb.addEventListener('redundant', async (e) => {
-    //When 2 versions are released while a user is live, 
+    //When 2 versions are released while a user is live,
     //the first installed service-worker becomes redundant when
     //the second service-worker is installed. In that case,
     //page shouldn't be reloaded when that first service-worker
@@ -73,7 +73,7 @@ export const install = (options) => {
       console.debug("install-workbox: controlling service-worker is changed, but it's not an update");
       return;
     }
-    
+
     console.debug('install-workbox: on controlling. sw.state', sw.state, controllingSW);
 
     if (sw.state !== 'activated') {
@@ -111,7 +111,10 @@ export const install = (options) => {
     //It's actually a hack to resolve the browser issue.
     //See https://stackoverflow.com/questions/54628657/self-skipwaiting-not-working-in-service-worker
     //for the reference.
-    window.setTimeout(() => window.location.reload(), 3000);
+    window.setTimeout(() => {
+      console.error("install-workbox: service-worker isn't activated in 5 seconds.");
+      window.location.reload();
+    }, 5000);
   };
 
   // Add an event listener to detect when the registered
@@ -128,10 +131,10 @@ export const install = (options) => {
 
     console.debug('install-workbox: updateChecker.onUpdate invoked.', updates, pendingUpdateConfirm);
 
-    //Note: While the App Tab is open, and 2 new versions are released 
+    //Note: While the App Tab is open, and 2 new versions are released
     //we don't receive `waiting` event again. So, notification (update confirmation)
-    //view isn't updated (if required). To solve this issue, we call the `updateOnConfirm` 
-    //in advance (before new service-worker is installed & ready); if user hasn't 
+    //view isn't updated (if required). To solve this issue, we call the `updateOnConfirm`
+    //in advance (before new service-worker is installed & ready); if user hasn't
     //confirmed earlier updates yet.
     if (pendingUpdateConfirm) {
       updateOnConfirm(updates);
