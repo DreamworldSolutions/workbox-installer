@@ -147,7 +147,10 @@ export const install = (options) => {
       updateOnConfirm(updates);
     }
 
-    wb.update();
+    //Wb update after sometimes.
+    setTimeout(() => {
+      wb.update();
+    }, 100);
   });
 }
 
