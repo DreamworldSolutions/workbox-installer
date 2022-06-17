@@ -22,6 +22,11 @@ const parseOptions = (options) => {
  */
 let lastUpdates;
 
+/**
+ * Holds timeout id of auto reload logic.
+ */
+let autoRealodTimeout;
+
 export const install = (options) => {
   options = parseOptions(options);
 
@@ -81,6 +86,7 @@ export const install = (options) => {
       const listener = () => {
         if (sw.state == 'activated') {
           console.debug('install-workbox: controlling service-worker is updated and activated. Going to reload now...');
+          window.clearTimeout(autoRealodTimeout);
           window.location.reload();
           sw.removeEventListener('statechange', listener);
         }
@@ -89,6 +95,7 @@ export const install = (options) => {
       return;
     }
     console.debug('install-workbox: controlling service-worker is updated. Going to reload...');
+    window.clearTimeout(autoRealodTimeout);
     window.location.reload();
   });
 
@@ -114,7 +121,7 @@ export const install = (options) => {
     //It's actually a hack to resolve the browser issue.
     //See https://stackoverflow.com/questions/54628657/self-skipwaiting-not-working-in-service-worker
     //for the reference.
-    window.setTimeout(() => {
+    autoRealodTimeout = window.setTimeout(() => {
       console.error("install-workbox: service-worker isn't activated in 5 seconds.");
       window.location.reload();
     }, 5000);
