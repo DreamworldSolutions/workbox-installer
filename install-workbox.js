@@ -75,28 +75,29 @@ export const install = (options) => {
     // Alternate (Manual) check for whether it's update or the fresh install
     const sw = navigator.serviceWorker.controller; //new ServiceWorker
     if(!sw || !controllingSW || controllingSW === sw) {
-      console.debug("install-workbox: controlling service-worker is changed, but it's not an update");
+      console.debug("install-workbox: controlling service-worker is changed, but it's not an update", controllingSW, sw);
       return;
     }
 
-    console.debug('install-workbox: on controlling. sw.state', sw.state, controllingSW);
+    console.debug('install-workbox: on controlling. sw.state: ', sw.state, controllingSW);
 
-    if (sw.state !== 'activated') {
-      console.debug('install-workbox: controlling service-worker is updated. Will wait till it is activated.');
-      const listener = () => {
-        if (sw.state == 'activated') {
-          console.debug('install-workbox: controlling service-worker is updated and activated. Going to reload now...');
-          window.clearTimeout(autoRealodTimeout);
-          window.location.reload();
-          sw.removeEventListener('statechange', listener);
-        }
-      };
-      sw.addEventListener('statechange', listener);
+    if(sw.state === 'activated') {
+      console.debug('install-workbox: controlling service-worker is updated. Going to reload...');
+      window.clearTimeout(autoRealodTimeout);
+      window.location.reload();
       return;
     }
-    console.debug('install-workbox: controlling service-worker is updated. Going to reload...');
-    window.clearTimeout(autoRealodTimeout);
-    window.location.reload();
+
+    console.debug('install-workbox: controlling service-worker is updated. Will wait till it is activated.');
+    const listener = () => {
+      if (sw.state == 'activated') {
+        console.debug('install-workbox: controlling service-worker is updated and activated. Going to reload now...');
+        window.clearTimeout(autoRealodTimeout);
+        window.location.reload();
+        sw.removeEventListener('statechange', listener);
+      }
+    };
+    sw.addEventListener('statechange', listener);
   });
 
   let pendingUpdateConfirm = false;
