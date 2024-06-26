@@ -29,7 +29,7 @@ let autoRealodTimeout;
 
 export const install = (options) => {
   options = parseOptions(options);
-
+  const onActivated = options.onActivated ? options.onActivated : () => { window.location.reload(); };
   const wb = new Workbox(options.url);
   window.wb = wb;
 
@@ -84,7 +84,7 @@ export const install = (options) => {
     if(sw.state === 'activated') {
       console.debug('install-workbox: controlling service-worker is updated. Going to reload...');
       window.clearTimeout(autoRealodTimeout);
-      window.location.reload();
+      onActivated();
       return;
     }
 
@@ -93,7 +93,7 @@ export const install = (options) => {
       if (sw.state == 'activated') {
         console.debug('install-workbox: controlling service-worker is updated and activated. Going to reload now...');
         window.clearTimeout(autoRealodTimeout);
-        window.location.reload();
+        onActivated();
         sw.removeEventListener('statechange', listener);
       }
     };
@@ -124,7 +124,7 @@ export const install = (options) => {
     //for the reference.
     autoRealodTimeout = window.setTimeout(() => {
       console.error("install-workbox: service-worker isn't activated in 5 seconds.");
-      window.location.reload();
+      onActivated();
     }, 5000);
   };
 
