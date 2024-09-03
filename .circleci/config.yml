@@ -2,7 +2,7 @@ version: 2
 jobs:
   release-snapshot:
     docker:
-      - image: circleci/node:14
+      - image: cimg/node:lts
     steps:
       - checkout
       #- run: yarn-deduplicate --includePrerelease --list --fail
@@ -15,7 +15,7 @@ jobs:
             npx semantic-release
   release:
     docker:
-      - image: circleci/node:14
+      - image: cimg/node:lts
     steps:
       - checkout
       #- run: yarn-deduplicate --includePrerelease --list --fail
