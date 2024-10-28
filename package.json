@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/DreamworldSolutions/workbox-installer#README",
   "dependencies": {
-    "firebase": "^10.13.1",
+    "firebase": "^11.0.1",
     "workbox-window": "^7.1.0"
   },
   "devDependencies": {
@@ -43,5 +43,10 @@
         "channel": "${name.replace(/^feature\\//g, \"\")}"
       }
     ]
+  },
+  "prettier": {
+    "singleQuote": true,
+    "arrowParens": "avoid",
+    "printWidth": 140
   }
 }
