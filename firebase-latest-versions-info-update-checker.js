@@ -1,22 +1,20 @@
 import AbstractUpdateChecker from './abstract-update-checker';
-import { ref, onValue, child, get } from 'firebase/database';
+import { getDatabase, ref, onValue, child, get } from 'firebase/database';
 
 /**
  * Note:: versionInfo declared on firebase should be an object and it should contains `latest` field.
  */
 
 export default class FirebaseLatestVersionsInfoUpdateChecker extends AbstractUpdateChecker {
-  constructor({ fbDatabase, latestVersionsInfoPath, latestVersionPath, curVersion }) {
+  constructor({ latestVersionsInfoPath, latestVersionPath, curVersion }) {
     super();
 
-    if (!fbDatabase || !latestVersionsInfoPath || !latestVersionPath || !curVersion) {
+    if (!latestVersionsInfoPath || !latestVersionPath || !curVersion) {
       throw new Error(
-        'Required config not found. Make sure you have specified' +
-          '`fbDatabase`, `latestVersionsInfoPath`, `latestVersionPath` and `curVersion`.'
+        'Required config not found. Make sure you have specified' + '`latestVersionsInfoPath`, `latestVersionPath` and `curVersion`.'
       );
     }
 
-    this.fbDatabase = fbDatabase;
     this.latestVersionsInfoPath = latestVersionsInfoPath;
     this.latestVersionPath = latestVersionPath;
     this.curVersion = curVersion;
@@ -27,8 +25,8 @@ export default class FirebaseLatestVersionsInfoUpdateChecker extends AbstractUpd
    * It watches the `latestVersionsInfoPath`, and whenever a new release is found, sets `updates` property.
    */
   _watchReleases() {
-    let _ref = ref(this.fbDatabase, this.latestVersionsInfoPath);
-    onValue(_ref, snapshot => {
+    const dbRef = ref(getDatabase(), this.latestVersionsInfoPath);
+    onValue(dbRef, snapshot => {
       const latestVersionsInfo = snapshot.val();
       const latestVersion = latestVersionsInfo && latestVersionsInfo[this.latestVersionPath];
       this.updates = latestVersion === this.curVersion ? null : latestVersionsInfo;
@@ -36,7 +34,8 @@ export default class FirebaseLatestVersionsInfoUpdateChecker extends AbstractUpd
   }
 
   async _getUpdates() {
-    const snapshot = await get(child(this.fbDatabase, this.latestVersionsInfoPath));
+    const dbRef = ref(getDatabase());
+    const snapshot = await get(child(dbRef, this.latestVersionsInfoPath));
     const latestVersionsInfo = snapshot.val();
     const latestVersion = latestVersionsInfo && latestVersionsInfo[this.latestVersionPath];
     return latestVersion === this.curVersion ? null : latestVersionsInfo;
