@@ -125,7 +125,7 @@ export const install = (options) => {
     autoRealodTimeout = window.setTimeout(() => {
       console.error("install-workbox: service-worker isn't activated in 5 seconds.");
       onActivated();
-    }, 5000);
+    }, 20000);
   };
 
   // Add an event listener to detect when the registered
