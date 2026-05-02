@@ -123,7 +123,7 @@ export const install = (options) => {
     //See https://stackoverflow.com/questions/54628657/self-skipwaiting-not-working-in-service-worker
     //for the reference.
     autoRealodTimeout = window.setTimeout(() => {
-      console.error("install-workbox: service-worker isn't activated in 5 seconds.");
+      console.warn("install-workbox: service-worker isn't activated in 20 seconds.");
       onActivated();
     }, 20000);
   };
