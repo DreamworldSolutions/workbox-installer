@@ -3,19 +3,21 @@ import UpdateChecker from './update-checker.js';
 
 const DEF_OPTIONS = {
   url: '/service-worker.js',
-  confirmUpdate: () => { return new Promise(() => { }); }, //No op functions
-  updateChecker: new UpdateChecker()
+  confirmUpdate: () => {
+    return new Promise(() => {});
+  }, //No op functions
+  updateChecker: new UpdateChecker(),
 };
 
-const parseOptions = (options) => {
+const parseOptions = options => {
   if (typeof options === 'string') {
     options = {
-      url: options
+      url: options,
     };
   }
 
   return { ...DEF_OPTIONS, ...options };
-}
+};
 
 /**
  * Holds last known updates value.
@@ -27,9 +29,13 @@ let lastUpdates;
  */
 let autoRealodTimeout;
 
-export const install = (options) => {
+export const install = options => {
   options = parseOptions(options);
-  const onActivated = options.onActivated ? options.onActivated : () => { window.location.reload(); };
+  const onActivated = options.onActivated
+    ? options.onActivated
+    : () => {
+        window.location.reload();
+      };
   const wb = new Workbox(options.url);
   window.wb = wb;
 
@@ -54,10 +60,9 @@ export const install = (options) => {
 
   let controllingSW;
 
-  wb.controlling.then((sw) => controllingSW = sw);
+  wb.controlling.then(sw => (controllingSW = sw));
 
-  wb.addEventListener('controlling', async (e) => {
-
+  wb.addEventListener('controlling', async e => {
     // Note: e.isUpdate doesn't work reliably, so it's not used.
     // In following scenario e.isUpdate should be `true`, but it's found `false`.
     // - Open app in incognito window (so a new service-worker is installed)
@@ -71,17 +76,16 @@ export const install = (options) => {
     //   return;
     // }
 
-
     // Alternate (Manual) check for whether it's update or the fresh install
     const sw = navigator.serviceWorker.controller; //new ServiceWorker
-    if(!sw || !controllingSW || controllingSW === sw) {
+    if (!sw || !controllingSW || controllingSW === sw) {
       console.debug("install-workbox: controlling service-worker is changed, but it's not an update", controllingSW, sw);
       return;
     }
 
     console.debug('install-workbox: on controlling. sw.state: ', sw.state, controllingSW);
 
-    if(sw.state === 'activated') {
+    if (sw.state === 'activated') {
       console.debug('install-workbox: controlling service-worker is updated. Going to reload...');
       window.clearTimeout(autoRealodTimeout);
       onActivated();
@@ -105,7 +109,7 @@ export const install = (options) => {
   /**
    * Updates service-worker upon the confirmUpdate.
    */
-  const updateOnConfirm = async (updates) => {
+  const updateOnConfirm = async updates => {
     pendingUpdateConfirm = true;
     console.debug('install-workbox: updateOnConfirm > START', pendingUpdateConfirm);
     if (!updates && !lastUpdates) {
@@ -130,18 +134,18 @@ export const install = (options) => {
 
   // Add an event listener to detect when the registered
   // service worker has installed but is waiting to activate.
-  wb.addEventListener('waiting', (event) => {
+  wb.addEventListener('waiting', event => {
     console.debug('install-workbox: on waiting invoked.', event);
     updateOnConfirm();
   });
 
-  wb.addEventListener('externalwaiting', (event) => {
+  wb.addEventListener('externalwaiting', event => {
     console.debug('install-workbox: on external-waiting invoked.', event);
   });
 
   wb.register();
 
-  options.updateChecker.onUpdate((updates) => {
+  options.updateChecker.onUpdate(updates => {
     lastUpdates = updates;
 
     console.debug('install-workbox: updateChecker.onUpdate invoked.', updates, pendingUpdateConfirm);
@@ -157,6 +161,6 @@ export const install = (options) => {
 
     wb.update();
   });
-}
+};
 
 export default install;
