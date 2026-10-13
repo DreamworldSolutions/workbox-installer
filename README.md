@@ -67,7 +67,7 @@ import { install } from '@dreamworld/workbox-installer';
 |-----------|------|---------|----------|-------------|
 | `url` | `string` | `'/service-worker.js'` | No | Path to the service worker script. |
 | `confirmUpdate` | `(updates: any) => Promise<void>` | No-op promise (never resolves) | No | Called when a new SW is in the `waiting` state. Resolve the returned promise to trigger `skipWaiting` and proceed with the update. |
-| `updateChecker` | `UpdateChecker` instance | `new UpdateChecker()` (no-op) | No | Strategy instance for detecting updates via Firebase/Firestore. When its `onUpdate` fires, `wb.update()` is called and the confirmation flow is re-triggered if already pending. |
+| `updateChecker` | `UpdateChecker` instance | `new UpdateChecker()` (no-op) | No | Strategy instance for detecting updates via Firebase/Firestore. When its `onUpdate` fires, `wb.update()` is called (a failed check is retried twice, 30 s apart) and the confirmation flow is re-triggered if already pending. |
 | `onActivated` | `() => void` | `() => window.location.reload()` | No | Called once the new SW takes control of the page. Override to implement custom post-activation logic. |
 
 > **String shorthand:** Passing a string is equivalent to `{ url: '<string>' }`. All other options take their defaults.

@@ -145,6 +145,17 @@ export const install = options => {
 
   wb.register();
 
+  // During a deploy service-worker.js can briefly answer 5xx; retry the update check twice, 30 seconds apart.
+  const update = (attempt = 1) => {
+    Promise.resolve(wb.update()).catch(error => {
+      if (attempt >= 3) {
+        console.warn('install-workbox: service-worker update failed.', error);
+        return;
+      }
+      window.setTimeout(() => update(attempt + 1), 30000);
+    });
+  };
+
   options.updateChecker.onUpdate(updates => {
     lastUpdates = updates;
 
@@ -159,7 +170,7 @@ export const install = options => {
       updateOnConfirm(updates);
     }
 
-    wb.update();
+    update();
   });
 };
 
